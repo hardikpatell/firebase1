@@ -17,10 +17,11 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText ed;
+    EditText edUser;
+    EditText edPass;
     Button btn;
     TextView tv;
-    String senddata,getdata;
+private String getdata;
 
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
@@ -31,25 +32,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ed=findViewById(R.id.txt);
+        edUser=findViewById(R.id.txtUser);
+        edPass=findViewById(R.id.txtPass);
         btn=findViewById(R.id.btn);
         tv=findViewById(R.id.txtview);
 
         firebaseDatabase=FirebaseDatabase.getInstance();
-        databaseReference=firebaseDatabase.getReference();
+        databaseReference=firebaseDatabase.getReference("user");
 
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                senddata=ed.getText().toString();
-                databaseReference.setValue(senddata);
+
+                databaseReference.child("name").setValue(edUser.getText().toString());
+                databaseReference.child("pass").setValue(edPass.getText().toString());
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        getdata=dataSnapshot.getValue(String.class);
-                        tv.setText(getdata);
+
 
                     }
 
