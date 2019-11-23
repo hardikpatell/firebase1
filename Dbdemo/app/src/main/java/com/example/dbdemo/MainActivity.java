@@ -1,67 +1,54 @@
 package com.example.dbdemo;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.os.Handler;
+import android.widget.ProgressBar;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText edUser;
-    EditText edPass;
-    Button btn;
-    TextView tv;
-private String getdata;
 
-    private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference databaseReference;
+    public static FirebaseDatabase firebaseDatabase;
+    public static DatabaseReference databaseReference;
 
+    ProgressBar splashProgress;
+    int SPLASH_TIME = 3000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        edUser=findViewById(R.id.txtUser);
-        edPass=findViewById(R.id.txtPass);
-        btn=findViewById(R.id.btn);
-        tv=findViewById(R.id.txtview);
+        //This is additional feature, used to run a progress bar
+        splashProgress = findViewById(R.id.splashProgress);
+        playProgress();
 
-        firebaseDatabase=FirebaseDatabase.getInstance();
-        databaseReference=firebaseDatabase.getReference("user");
-
-
-        btn.setOnClickListener(new View.OnClickListener() {
+        //Code to start timer and take action after the timer ends
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onClick(View v) {
+            public void run() {
+                //Do any action here. Now we are moving to next page
+                Intent mySuperIntent = new Intent(getApplicationContext(), Registration.class);
+                startActivity(mySuperIntent);
 
-
-                databaseReference.child("name").setValue(edUser.getText().toString());
-                databaseReference.child("pass").setValue(edPass.getText().toString());
-                databaseReference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+                //This 'finish()' is for exiting the app when back button pressed from Home page which is ActivityHome
+                finish();
 
             }
-        });
+        }, SPLASH_TIME);
+    }
+
+    //Method to run progress bar for 5 seconds
+    private void playProgress() {
+        ObjectAnimator.ofInt(splashProgress, "progress", 100)
+                .setDuration(5000)
+                .start();
+
+
     }
 }
